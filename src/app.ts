@@ -8,7 +8,7 @@ const protocol = process.env.PROTOCOL === 'https' ? 'https' : 'http'
 const http = require(protocol).Server(app)
 
 const hostname = process.env.HOSTNAME || '127.0.0.1'
-const port = process.env.PORT || 8190
+const port = process.env.PORT || 8000
 
 app.set('protocol', protocol)
 app.set('port', port)
