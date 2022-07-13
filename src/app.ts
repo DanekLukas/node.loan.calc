@@ -1,18 +1,18 @@
 import express from 'express'
-import * as path from 'path'
 import url from 'url'
 import fs from 'fs'
 
 const app = express()
-const protocol = process.env.PROTOCOL === 'https' ? 'https' : 'http'
-const http = require(protocol).Server(app)
-
-const hostname = process.env.HOSTNAME || '127.0.0.1'
-const port = process.env.PORT || 8000
-
+const protocol = process.env.PROTOCOL || 'http'
+const port = process.env.PORT || 8080
+const host = process.env.HOST || '0.0.0.0'
 app.set('protocol', protocol)
-app.set('port', port)
-app.set('host', '0.0.0.0')
+app.set('credentials', app.get('protocol')==='https' ? {
+  key: fs.readFileSync(process.env.PRIVATE_KEY || '', 'utf8'),
+  cert: fs.readFileSync(process.env.CERTIFICATE || '', 'utf8')
+} : undefined );
+app.set('port', port);
+app.set('host', host);
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
@@ -50,8 +50,7 @@ app.post('/calc', (req, res) => {
   }
 
 })
-
-
+const http = require(protocol).Server(app)
 http.listen(port, () => {
-  console.log(`Socket server running at ${protocol}://0.0.0.0:${port}/`)
+  console.log(`Socket server running at ${protocol}://${host}:${port}/`)
 })
