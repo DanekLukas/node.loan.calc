@@ -2,3 +2,5 @@ build/
 externals.d.ts
 node_modules/
 package-lock.json
+src/app.js
+www/

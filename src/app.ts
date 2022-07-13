@@ -16,16 +16,16 @@ app.set('host', '0.0.0.0')
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
-app.use(express.static(path.join(__dirname, 'static')))
-
+const publicDir = __dirname+'/../www'
+app.use(express.static(publicDir))
 app.get('*', async (req, res) => {
   const  parsedUrl = url.parse(req.url, true)
   if(parsedUrl === null) {
-    res.sendFile('index.html', {'root': __dirname})
+    res.sendFile(publicDir+'index.html')
     return
   } 
-  const path = [__dirname,parsedUrl!.path.replace(/^\/+|\/+$/g,"")].join('/')
-  if(path === '' || (()=>{fs.access(path, fs.constants.F_OK, (err) => {
+  const file = __dirname+parsedUrl!.path.replace(/^\/+|\/+$/g,"")
+  if(file === '' || (()=>{fs.access(file, fs.constants.F_OK, (err) => {
     if (err) {
       console.error(err)
       return true
@@ -33,7 +33,7 @@ app.get('*', async (req, res) => {
   })
   return true
   })())
-    res.sendFile(path)
+    res.sendFile(file)
 })
 
 app.post('/calc', (req, res) => {
